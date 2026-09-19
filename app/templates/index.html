@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Assistant</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <h1>AI Study Assistant</h1>
+
+        <p class="subtitle">
+            Upload your study materials and use AI to understand,
+            summarise and test your knowledge.
+        </p>
+
+        <h2>Study Tools</h2>
+
+        <section class="tools">
+
+            <div class="tool-card">
+    <h3>📄 Upload Notes</h3>
+    <p>Upload your study materials to get started.</p>
+
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".pdf,.txt" required>
+        <button type="submit">Upload</button>
+    </form>
+</div>
+
+            <div class="tool-card">
+                <h3>✨ Summarise</h3>
+                <p>Turn lengthy study notes into concise summaries.</p>
+                <button>Summarise</button>
+            </div>
+
+            <div class="tool-card">
+                <h3>🧠 Generate Quiz</h3>
+                <p>Test your knowledge with questions generated from your notes.</p>
+                <button>Generate Quiz</button>
+            </div>
+
+            <div class="tool-card">
+                <h3>💬 Ask Questions</h3>
+                <p>Ask questions and get answers based on your study material.</p>
+                <button>Ask Question</button>
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
