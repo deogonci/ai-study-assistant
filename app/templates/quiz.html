@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Study Quiz</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <a class="back-link" href="/">← Upload another document</a>
+
+        <h1>🧠 Study Quiz</h1>
+
+        <p class="subtitle">{{ filename }}</p>
+
+        {% if questions %}
+
+            <form action="/submit-quiz" method="POST">
+
+                {% for question in questions %}
+
+                    <div class="tool-card">
+
+                        <h3>Question {{ loop.index }}</h3>
+
+                        <p>{{ question.question }}</p>
+
+                        <input
+                            class="question-input"
+                            type="text"
+                            name="answer_{{ loop.index0 }}"
+                            placeholder="Enter your answer"
+                            required
+                        >
+
+                    </div>
+
+                    <br>
+
+                {% endfor %}
+
+                <button type="submit">Submit Quiz</button>
+
+            </form>
+
+        {% else %}
+
+            <p>There wasn't enough text to generate a quiz.</p>
+
+        {% endif %}
+
+    </main>
+
+</body>
+
+</html>

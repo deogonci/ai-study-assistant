@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quiz Results</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <a class="back-link" href="/">← Back to home</a>
+
+        <h1>Quiz Results</h1>
+
+        <div class="document-header">
+            <h2>{{ score }} / {{ total }}</h2>
+            <p class="subtitle">{{ percentage }}%</p>
+        </div>
+
+        <section class="workspace-section">
+
+            <h2>Answers</h2>
+
+            {% for result in results %}
+
+                <div class="tool-card">
+
+                    <h3>Question {{ loop.index }}</h3>
+
+                    <p>
+                        Your answer:
+                        <strong>{{ result.user_answer }}</strong>
+                    </p>
+
+                    <p>
+                        Correct answer:
+                        <strong>{{ result.correct_answer }}</strong>
+                    </p>
+
+                    {% if result.is_correct %}
+                        <p>✅ Correct</p>
+                    {% else %}
+                        <p>❌ Incorrect</p>
+                    {% endif %}
+
+                </div>
+
+                <br>
+
+            {% endfor %}
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

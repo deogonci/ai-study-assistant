@@ -4,16 +4,9 @@ import uuid
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.utils import secure_filename
 from pypdf import PdfReader
-from dotenv import load_dotenv
 
-
-env_path = os.path.join(os.path.dirname(__file__), "..", ".env")
-load_dotenv(env_path)
-
-from ai_service import summarise_notes
-
-
-load_dotenv()
+from summariser import summarise_notes
+from quiz_generator import generate_quiz
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
@@ -115,6 +108,73 @@ def summarise():
         "summary.html",
         filename=session.get("filename"),
         summary=summary
+    )
+
+@app.route("/quiz", methods=["POST"])
+def quiz():
+    filepath = session.get("filepath")
+
+    if not filepath or not os.path.exists(filepath):
+        return redirect(url_for("home"))
+
+    if filepath.lower().endswith(".txt"):
+        text = read_text_file(filepath)
+
+    elif filepath.lower().endswith(".pdf"):
+        text = read_pdf_file(filepath)
+
+    else:
+        return "Unsupported file type", 400
+
+    questions = generate_quiz(text)
+
+    session["quiz_answers"] = [
+        question["answer"]
+        for question in questions
+    ]
+
+    return render_template(
+        "quiz.html",
+        filename=session.get("filename"),
+        questions=questions
+    )
+
+@app.route("/submit-quiz", methods=["POST"])
+def submit_quiz():
+    correct_answers = session.get("quiz_answers", [])
+
+    score = 0
+    results = []
+
+    for index, correct_answer in enumerate(correct_answers):
+        user_answer = request.form.get(
+            f"answer_{index}",
+            ""
+        ).strip().lower()
+
+        correct_answer = correct_answer.strip().lower()
+
+        is_correct = user_answer == correct_answer
+
+        if is_correct:
+            score += 1
+
+        results.append({
+            "user_answer": user_answer,
+            "correct_answer": correct_answer,
+            "is_correct": is_correct
+        })
+
+    total = len(results)
+
+    percentage = round((score / total) * 100) if total > 0 else 0
+
+    return render_template(
+        "quiz_results.html",
+        score=score,
+        total=total,
+        percentage=percentage,
+        results=results
     )
 
 if __name__ == "__main__":
