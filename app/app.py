@@ -1,11 +1,13 @@
 import os
+import uuid
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.utils import secure_filename
 from pypdf import PdfReader
 
 
 app = Flask(__name__)
+app.secret_key = "dev-secret-key"
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
 ALLOWED_EXTENSIONS = {"pdf", "txt"}
@@ -43,7 +45,6 @@ def read_pdf_file(filepath):
 def home():
     return render_template("index.html")
 
-
 @app.route("/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
@@ -62,6 +63,8 @@ def upload_file():
 
     file.save(filepath)
 
+    document_id = str(uuid.uuid4())
+
     if filename.lower().endswith(".txt"):
         text = read_text_file(filepath)
 
@@ -71,13 +74,34 @@ def upload_file():
     else:
         return "Unsupported file type", 400
 
+    session["document_id"] = document_id
+    session["filename"] = filename
+    session["filepath"] = filepath
 
-    return f"""
-    <h1>{filename}</h1>
-    <h2>Extracted Notes:</h2>
-    <pre>{text}</pre>
-    """
+    return render_template(
+        "workspace.html",
+        filename=filename,
+        text=text
+    )
 
+@app.route("/summarise", methods=["POST"])
+def summarise():
+    filepath = session.get("filepath")
+
+    if not filepath or not os.path.exists(filepath):
+        return redirect(url_for("home"))
+
+    if filepath.lower().endswith(".txt"):
+        text = read_text_file(filepath)
+
+    elif filepath.lower().endswith(".pdf"):
+        text = read_pdf_file(filepath)
+
+    else:
+        return "Unsupported file type", 400
+
+    return f"Ready to summarise {len(text)} characters."
 
 if __name__ == "__main__":
     app.run(debug=True)
+    

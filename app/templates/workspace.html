@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Workspace</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <a class="back-link" href="/">← Upload another document</a>
+
+        <div class="document-header">
+            <div>
+                <p class="document-label">CURRENT DOCUMENT</p>
+                <h1>📄 {{ filename }}</h1>
+                <p class="success-message">
+                    ✓ Document processed successfully
+                </p>
+            </div>
+        </div>
+
+    <section class="workspace-section">
+
+        <h2>What would you like to do?</h2>
+
+        <div class="workspace-actions">
+
+        <form action="/summarise" method="POST">
+            <button type="submit">✨ Summarise Notes</button>
+        </form>
+
+        <button>🧠 Generate Quiz</button>
+
+        </div>
+
+    </section>
+
+        <section class="workspace-section">
+
+            <h2>Ask your notes</h2>
+
+            <form>
+                <input
+                    class="question-input"
+                    type="text"
+                    placeholder="Ask a question about your study material..."
+                >
+
+                <button type="submit">Ask</button>
+            </form>
+
+        </section>
+
+        <section class="workspace-section">
+
+            <h2>Document Preview</h2>
+
+            <div class="document-preview">
+                {{ text }}
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

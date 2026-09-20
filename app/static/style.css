@@ -64,3 +64,70 @@ button {
 button:hover {
     background: #1d4ed8;
 }
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 35px;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+.document-header {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.document-header h1 {
+    font-size: 30px;
+    margin: 5px 0 10px;
+}
+
+.document-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #6b7280;
+}
+
+.success-message {
+    color: #16a34a;
+    margin-bottom: 0;
+}
+
+.workspace-section {
+    margin-top: 35px;
+}
+
+.workspace-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.question-input {
+    width: 75%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    margin-right: 8px;
+    font-size: 15px;
+}
+
+.document-preview {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 25px;
+
+    white-space: pre-wrap;
+
+    max-height: 350px;
+    overflow-y: auto;
+
+    line-height: 1.6;
+}
