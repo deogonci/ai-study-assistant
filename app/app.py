@@ -4,7 +4,16 @@ import uuid
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.utils import secure_filename
 from pypdf import PdfReader
+from dotenv import load_dotenv
 
+
+env_path = os.path.join(os.path.dirname(__file__), "..", ".env")
+load_dotenv(env_path)
+
+from ai_service import summarise_notes
+
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
@@ -100,7 +109,13 @@ def summarise():
     else:
         return "Unsupported file type", 400
 
-    return f"Ready to summarise {len(text)} characters."
+    summary = summarise_notes(text)
+
+    return render_template(
+        "summary.html",
+        filename=session.get("filename"),
+        summary=summary
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)

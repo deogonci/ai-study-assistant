@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Study Summary</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <a class="back-link" href="/">
+            ← Upload another document
+        </a>
+
+        <h1>Study Summary</h1>
+
+        <p class="subtitle">
+            {{ filename }}
+        </p>
+
+        <section class="document-preview">
+            {{ summary }}
+        </section>
+
+    </main>
+
+</body>
+
+</html>
