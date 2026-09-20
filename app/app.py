@@ -8,7 +8,16 @@ from pypdf import PdfReader
 from summariser import summarise_notes
 from quiz_generator import generate_quiz
 
+from database import (
+    initialise_database,
+    save_document,
+    get_all_documents,
+    get_document,
+    delete_document
+)
+
 app = Flask(__name__)
+initialise_database()
 app.secret_key = "dev-secret-key"
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
@@ -45,7 +54,12 @@ def read_pdf_file(filepath):
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    documents = get_all_documents()
+
+    return render_template(
+        "index.html",
+        documents=documents
+    )
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
@@ -75,6 +89,12 @@ def upload_file():
 
     else:
         return "Unsupported file type", 400
+
+    save_document(
+        document_id,
+        filename,
+        filepath
+    )
 
     session["document_id"] = document_id
     session["filename"] = filename
@@ -176,6 +196,59 @@ def submit_quiz():
         percentage=percentage,
         results=results
     )
+
+@app.route("/document/<document_id>")
+def open_document(document_id):
+    document = get_document(document_id)
+
+    if document is None:
+        return "Document not found", 404
+
+    filepath = document["filepath"]
+
+    if not os.path.exists(filepath):
+        return "Document file no longer exists", 404
+
+    if filepath.lower().endswith(".txt"):
+        text = read_text_file(filepath)
+
+    elif filepath.lower().endswith(".pdf"):
+        text = read_pdf_file(filepath)
+
+    else:
+        return "Unsupported file type", 400
+
+    session["document_id"] = document["document_id"]
+    session["filename"] = document["filename"]
+    session["filepath"] = filepath
+
+    return render_template(
+        "workspace.html",
+        filename=document["filename"],
+        text=text
+    )
+
+@app.route("/document/<document_id>/delete", methods=["POST"])
+def remove_document(document_id):
+    document = get_document(document_id)
+
+    if document is None:
+        return "Document not found", 404
+
+    filepath = document["filepath"]
+
+    delete_document(document_id)
+
+    if os.path.exists(filepath):
+        os.remove(filepath)
+
+    if session.get("document_id") == document_id:
+        session.pop("document_id", None)
+        session.pop("filename", None)
+        session.pop("filepath", None)
+        session.pop("quiz_answers", None)
+
+    return redirect(url_for("home"))
 
 if __name__ == "__main__":
     app.run(debug=True)

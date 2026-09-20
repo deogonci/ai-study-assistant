@@ -54,6 +54,47 @@
 
         </section>
 
+        <section class="workspace-section">
+
+            <h2>Recent Documents</h2>
+
+            {% if documents %}
+
+                {% for document in documents %}
+
+                    <div class="tool-card">
+
+                        <h3>📄 {{ document["filename"] }}</h3>
+
+                        <p>
+                            Uploaded: {{ document["uploaded_at"] }}
+                        </p>
+
+                        <a href="{{ url_for('open_document', document_id=document['document_id']) }}">
+                            Open Document
+                        </a>
+
+                        <form
+                            action="{{ url_for('remove_document', document_id=document['document_id']) }}"
+                            method="POST"
+                        >
+                            <button type="submit">Delete</button>
+                        </form>
+
+                    </div>
+
+                    <br>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>No documents uploaded yet.</p>
+
+            {% endif %}
+
+        </section>
+
     </main>
 
 </body>
