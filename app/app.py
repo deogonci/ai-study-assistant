@@ -4,6 +4,7 @@ import uuid
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.utils import secure_filename
 from pypdf import PdfReader
+from utils import allowed_file
 
 from summariser import summarise_notes
 from quiz_generator import generate_quiz
@@ -29,19 +30,11 @@ app.secret_key = os.environ.get(
 initialise_database()
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
-ALLOWED_EXTENSIONS = {"pdf", "txt"}
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-
-def allowed_file(filename):
-    return (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-    )
 
 def show_error(title, message, status_code=400):
     return render_template(
