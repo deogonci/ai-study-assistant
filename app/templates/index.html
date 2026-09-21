@@ -34,6 +34,25 @@
     </form>
 </div>
 
+    <section class="dashboard-stats">
+
+        <div class="stat-card">
+            <h3>{{ stats["document_count"] }}</h3>
+            <p>Documents Uploaded</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>{{ stats["quiz_count"] }}</h3>
+            <p>Quizzes Completed</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>{{ stats["average_score"] }}%</h3>
+            <p>Average Score</p>
+        </div>
+
+    </section>
+
             <div class="tool-card">
                 <h3>✨ Summarise</h3>
                 <p>Turn lengthy study notes into concise summaries.</p>
@@ -94,6 +113,67 @@
             {% endif %}
 
         </section>
+
+        <section class="workspace-section">
+
+            <h2>Quiz History</h2>
+
+            {% if quiz_results %}
+
+                {% for result in quiz_results %}
+
+                    <div class="tool-card">
+
+                        <h3>🧠 {{ result["filename"] }}</h3>
+
+                        <p>
+                            Score:
+                            <strong>
+                                {{ result["score"] }} / {{ result["total"] }}
+                            </strong>
+                        </p>
+
+                        <p>
+                            Percentage:
+                            <strong>{{ result["percentage"] }}%</strong>
+                        </p>
+
+                        <p>
+                            Completed: {{ result["completed_at"] }}
+                        </p>
+
+                    </div>
+
+                    <br>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>No quizzes completed yet.</p>
+
+            {% endif %}
+
+        </section>
+
+        <section class="dashboard-stats">
+
+    <div class="stat-card">
+        <h3>{{ stats["document_count"] }}</h3>
+        <p>Documents Uploaded</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>{{ stats["quiz_count"] }}</h3>
+        <p>Quizzes Completed</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>{{ stats["average_score"] }}%</h3>
+        <p>Average Score</p>
+    </div>
+
+</section>
 
     </main>
 

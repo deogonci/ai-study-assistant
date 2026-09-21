@@ -13,7 +13,10 @@ from database import (
     save_document,
     get_all_documents,
     get_document,
-    delete_document
+    delete_document,
+    save_quiz_result,
+    get_quiz_results,
+    get_dashboard_stats
 )
 
 app = Flask(__name__)
@@ -55,10 +58,14 @@ def read_pdf_file(filepath):
 @app.route("/")
 def home():
     documents = get_all_documents()
+    quiz_results = get_quiz_results()
+    stats = get_dashboard_stats()
 
     return render_template(
         "index.html",
-        documents=documents
+        documents=documents,
+        quiz_results=quiz_results,
+        stats=stats
     )
 
 @app.route("/upload", methods=["POST"])
@@ -75,11 +82,17 @@ def upload_file():
         return "Only PDF and TXT files are allowed", 400
 
     filename = secure_filename(file.filename)
-    filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-
-    file.save(filepath)
 
     document_id = str(uuid.uuid4())
+
+    stored_filename = f"{document_id}_{filename}"
+
+    filepath = os.path.join(
+        app.config["UPLOAD_FOLDER"],
+        stored_filename
+    )
+
+    file.save(filepath)
 
     if filename.lower().endswith(".txt"):
         text = read_text_file(filepath)
@@ -188,6 +201,16 @@ def submit_quiz():
     total = len(results)
 
     percentage = round((score / total) * 100) if total > 0 else 0
+
+    document_id = session.get("document_id")
+
+    if document_id and total > 0:
+        save_quiz_result(
+            document_id,
+            score,
+            total,
+            percentage
+        )
 
     return render_template(
         "quiz_results.html",

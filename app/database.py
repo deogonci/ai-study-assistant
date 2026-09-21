@@ -28,6 +28,19 @@ def initialise_database():
         )
     """)
 
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS quiz_results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            document_id TEXT NOT NULL,
+            score INTEGER NOT NULL,
+            total INTEGER NOT NULL,
+            percentage INTEGER NOT NULL,
+            completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (document_id)
+                REFERENCES documents (document_id)
+        )
+    """)
+
     connection.commit()
     connection.close()
 
@@ -89,3 +102,76 @@ def delete_document(document_id):
 
     connection.commit()
     connection.close()
+
+def save_quiz_result(document_id, score, total, percentage):
+    connection = get_db_connection()
+
+    connection.execute(
+        """
+        INSERT INTO quiz_results (
+            document_id,
+            score,
+            total,
+            percentage
+        )
+        VALUES (?, ?, ?, ?)
+        """,
+        (
+            document_id,
+            score,
+            total,
+            percentage
+        )
+    )
+
+    connection.commit()
+    connection.close()
+
+def get_quiz_results():
+    connection = get_db_connection()
+
+    results = connection.execute(
+        """
+        SELECT
+            quiz_results.id,
+            documents.filename,
+            quiz_results.score,
+            quiz_results.total,
+            quiz_results.percentage,
+            quiz_results.completed_at
+        FROM quiz_results
+        JOIN documents
+            ON quiz_results.document_id = documents.document_id
+        ORDER BY quiz_results.completed_at DESC
+        """
+    ).fetchall()
+
+    connection.close()
+
+    return results
+
+def get_dashboard_stats():
+    connection = get_db_connection()
+
+    document_count = connection.execute(
+        "SELECT COUNT(*) FROM documents"
+    ).fetchone()[0]
+
+    quiz_count = connection.execute(
+        "SELECT COUNT(*) FROM quiz_results"
+    ).fetchone()[0]
+
+    average_score = connection.execute(
+        "SELECT AVG(percentage) FROM quiz_results"
+    ).fetchone()[0]
+
+    connection.close()
+
+    if average_score is None:
+        average_score = 0
+
+    return {
+        "document_count": document_count,
+        "quiz_count": quiz_count,
+        "average_score": round(average_score)
+    }
