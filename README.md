@@ -26,19 +26,19 @@ The project was built to explore backend web development, document processing, d
 
 The StudyFlow dashboard provides an overview of uploaded documents, completed quizzes and average quiz performance.
 
-![StudyFlow Dashboard](assets/dashboard.png)
+![StudyFlow Dashboard](./assets/dashboard.png)
 
 ### Study Workspace
 
 Uploaded documents can be previewed and used to generate summaries or quizzes.
 
-![StudyFlow Study Workspace](assets/workspace.png)
+![StudyFlow Study Workspace](./assets/workspace.png)
 
 ### Quiz Results
 
 Quiz attempts are scored automatically, with feedback showing correct and incorrect answers.
 
-![StudyFlow Quiz Results](assets/quiz-results.png)
+![StudyFlow Quiz Results](./assets/quiz-results.png)
 ## How It Works
 
 ### Document Processing
