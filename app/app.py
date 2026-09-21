@@ -20,7 +20,11 @@ from database import (
 )
 
 app = Flask(__name__)
-app.secret_key = "dev-secret-key"
+
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "development-secret-key"
+)
 
 initialise_database()
 
@@ -28,6 +32,7 @@ UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
 ALLOWED_EXTENSIONS = {"pdf", "txt"}
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -37,6 +42,13 @@ def allowed_file(filename):
         "." in filename
         and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
     )
+
+def show_error(title, message, status_code=400):
+    return render_template(
+        "error.html",
+        title=title,
+        message=message
+    ), status_code
 
 
 def read_text_file(filepath):
@@ -72,7 +84,10 @@ def home():
 @app.route("/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
-        return "No file selected", 400
+        return show_error(
+            "No file selected",
+            "Choose a PDF or TXT document to upload."
+        )
 
     file = request.files["file"]
 
@@ -80,12 +95,14 @@ def upload_file():
         return "No file selected", 400
 
     if not allowed_file(file.filename):
-        return "Only PDF and TXT files are allowed", 400
+        return show_error(
+            "Unsupported file type",
+            "Please upload a PDF or TXT document."
+        )
 
     filename = secure_filename(file.filename)
 
     document_id = str(uuid.uuid4())
-
     stored_filename = f"{document_id}_{filename}"
 
     filepath = os.path.join(
@@ -93,16 +110,37 @@ def upload_file():
         stored_filename
     )
 
-    file.save(filepath)
+    try:
+        file.save(filepath)
 
-    if filename.lower().endswith(".txt"):
-        text = read_text_file(filepath)
+        if filename.lower().endswith(".txt"):
+            text = read_text_file(filepath)
 
-    elif filename.lower().endswith(".pdf"):
-        text = read_pdf_file(filepath)
+        elif filename.lower().endswith(".pdf"):
+            text = read_pdf_file(filepath)
 
-    else:
-        return "Unsupported file type", 400
+        else:
+            return "Unsupported file type", 400
+
+        if not text.strip():
+            if os.path.exists(filepath):
+                os.remove(filepath)
+
+            return show_error(
+                "No readable text found",
+                "StudyFlow could not extract text from this document. "
+                "Scanned or image-only PDFs may not contain extractable text."
+            )
+
+    except Exception:
+        if os.path.exists(filepath):
+            os.remove(filepath)
+
+        return show_error(
+            "Document processing failed",
+            "StudyFlow could not process this document. "
+            "The file may be damaged or unsupported."
+        )
 
     save_document(
         document_id,
@@ -274,6 +312,15 @@ def remove_document(document_id):
 
     return redirect(url_for("home"))
 
+@app.errorhandler(413)
+def file_too_large(error):
+    return show_error(
+        "File too large",
+        "The maximum upload size is 10 MB.",
+        413
+    )
+
 if __name__ == "__main__":
-    app.run(debug=True)
-    
+    app.run(
+        debug=os.environ.get("FLASK_DEBUG") == "1"
+    )

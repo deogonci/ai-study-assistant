@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error | StudyFlow</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">StudyFlow</a>
+            <span class="nav-label">Error</span>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+
+        <div class="error-card">
+
+            <div class="error-icon">!</div>
+
+            <p class="eyebrow">SOMETHING WENT WRONG</p>
+
+            <h1>{{ title }}</h1>
+
+            <p class="error-message">
+                {{ message }}
+            </p>
+
+            <a href="/" class="secondary-button">
+                Back to dashboard
+            </a>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>
