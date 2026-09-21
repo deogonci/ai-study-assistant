@@ -18,6 +18,7 @@ The project was built to explore backend web development, document processing, d
 - Delete documents and associated quiz data
 - Handle invalid and corrupted documents
 - Responsive user interface
+- Automated tests for core application functionality
 
 ## Screenshots
 
@@ -89,6 +90,7 @@ SQL queries including `JOIN`, `COUNT`, and `AVG` are used to generate document h
 - pypdf
 - Git
 - GitHub
+- pytest
 
 ## Project Structure
 
@@ -166,6 +168,16 @@ python app/app.py
 ```
 
 Open the local address displayed by Flask in your browser.
+
+## Running Tests
+
+Run the automated test suite from the project root:
+
+```bash
+pytest -v
+```
+
+The test suite covers core summarisation, quiz generation and file-validation behaviour.
 
 ## Error Handling
 
