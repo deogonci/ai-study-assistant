@@ -94,6 +94,14 @@ def delete_document(document_id):
 
     connection.execute(
         """
+        DELETE FROM quiz_results
+        WHERE document_id = ?
+        """,
+        (document_id,)
+    )
+
+    connection.execute(
+        """
         DELETE FROM documents
         WHERE document_id = ?
         """,
@@ -102,6 +110,7 @@ def delete_document(document_id):
 
     connection.commit()
     connection.close()
+
 
 def save_quiz_result(document_id, score, total, percentage):
     connection = get_db_connection()
@@ -175,3 +184,19 @@ def get_dashboard_stats():
         "quiz_count": quiz_count,
         "average_score": round(average_score)
     }
+
+def delete_orphaned_quiz_results():
+    connection = get_db_connection()
+
+    connection.execute(
+        """
+        DELETE FROM quiz_results
+        WHERE document_id NOT IN (
+            SELECT document_id
+            FROM documents
+        )
+        """
+    )
+
+    connection.commit()
+    connection.close()

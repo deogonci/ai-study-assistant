@@ -4,176 +4,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Study Assistant</title>
+    <title>StudyFlow</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
-    <main class="container">
-
-        <h1>AI Study Assistant</h1>
-
-        <p class="subtitle">
-            Upload your study materials and use AI to understand,
-            summarise and test your knowledge.
-        </p>
-
-        <h2>Study Tools</h2>
-
-        <section class="tools">
-
-            <div class="tool-card">
-    <h3>📄 Upload Notes</h3>
-    <p>Upload your study materials to get started.</p>
-
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".pdf,.txt" required>
-        <button type="submit">Upload</button>
-    </form>
-</div>
-
-    <section class="dashboard-stats">
-
-        <div class="stat-card">
-            <h3>{{ stats["document_count"] }}</h3>
-            <p>Documents Uploaded</p>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">StudyFlow</a>
+            <span class="nav-label">Dashboard</span>
         </div>
+    </nav>
 
-        <div class="stat-card">
-            <h3>{{ stats["quiz_count"] }}</h3>
-            <p>Quizzes Completed</p>
-        </div>
+    <main class="dashboard-container">
 
-        <div class="stat-card">
-            <h3>{{ stats["average_score"] }}%</h3>
-            <p>Average Score</p>
-        </div>
+        <header class="dashboard-header">
+            <p class="eyebrow">STUDY DASHBOARD</p>
+            <h1>Welcome to StudyFlow</h1>
+            <p class="dashboard-subtitle">
+                Upload your study material, generate summaries,
+                test your knowledge and track your progress.
+            </p>
+        </header>
 
-    </section>
 
-            <div class="tool-card">
-                <h3>✨ Summarise</h3>
-                <p>Turn lengthy study notes into concise summaries.</p>
-                <button>Summarise</button>
-            </div>
-
-            <div class="tool-card">
-                <h3>🧠 Generate Quiz</h3>
-                <p>Test your knowledge with questions generated from your notes.</p>
-                <button>Generate Quiz</button>
-            </div>
-
-            <div class="tool-card">
-                <h3>💬 Ask Questions</h3>
-                <p>Ask questions and get answers based on your study material.</p>
-                <button>Ask Question</button>
-            </div>
-
-        </section>
-
-        <section class="workspace-section">
-
-            <h2>Recent Documents</h2>
-
-            {% if documents %}
-
-                {% for document in documents %}
-
-                    <div class="tool-card">
-
-                        <h3>📄 {{ document["filename"] }}</h3>
-
-                        <p>
-                            Uploaded: {{ document["uploaded_at"] }}
-                        </p>
-
-                        <a href="{{ url_for('open_document', document_id=document['document_id']) }}">
-                            Open Document
-                        </a>
-
-                        <form
-                            action="{{ url_for('remove_document', document_id=document['document_id']) }}"
-                            method="POST"
-                        >
-                            <button type="submit">Delete</button>
-                        </form>
-
-                    </div>
-
-                    <br>
-
-                {% endfor %}
-
-            {% else %}
-
-                <p>No documents uploaded yet.</p>
-
-            {% endif %}
-
-        </section>
-
-        <section class="workspace-section">
-
-            <h2>Quiz History</h2>
-
-            {% if quiz_results %}
-
-                {% for result in quiz_results %}
-
-                    <div class="tool-card">
-
-                        <h3>🧠 {{ result["filename"] }}</h3>
-
-                        <p>
-                            Score:
-                            <strong>
-                                {{ result["score"] }} / {{ result["total"] }}
-                            </strong>
-                        </p>
-
-                        <p>
-                            Percentage:
-                            <strong>{{ result["percentage"] }}%</strong>
-                        </p>
-
-                        <p>
-                            Completed: {{ result["completed_at"] }}
-                        </p>
-
-                    </div>
-
-                    <br>
-
-                {% endfor %}
-
-            {% else %}
-
-                <p>No quizzes completed yet.</p>
-
-            {% endif %}
-
-        </section>
+        <!-- Statistics -->
 
         <section class="dashboard-stats">
 
-    <div class="stat-card">
-        <h3>{{ stats["document_count"] }}</h3>
-        <p>Documents Uploaded</p>
-    </div>
+            <div class="stat-card">
+                <p class="stat-label">Documents</p>
+                <h2>{{ stats["document_count"] }}</h2>
+                <p class="stat-description">Study materials uploaded</p>
+            </div>
 
-    <div class="stat-card">
-        <h3>{{ stats["quiz_count"] }}</h3>
-        <p>Quizzes Completed</p>
-    </div>
+            <div class="stat-card">
+                <p class="stat-label">Quizzes</p>
+                <h2>{{ stats["quiz_count"] }}</h2>
+                <p class="stat-description">Quizzes completed</p>
+            </div>
 
-    <div class="stat-card">
-        <h3>{{ stats["average_score"] }}%</h3>
-        <p>Average Score</p>
-    </div>
+            <div class="stat-card">
+                <p class="stat-label">Average score</p>
+                <h2>{{ stats["average_score"] }}%</h2>
+                <p class="stat-description">Across all quiz attempts</p>
+            </div>
 
-</section>
+        </section>
+
+
+        <!-- Upload -->
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Upload study material</h2>
+                    <p>Add a PDF or TXT document to start studying.</p>
+                </div>
+            </div>
+
+            <div class="upload-panel">
+
+                <div class="upload-icon">↑</div>
+
+                <h3>Choose your study material</h3>
+
+                <p>
+                    Upload lecture notes, revision material or
+                    other text-based documents.
+                </p>
+
+                <form action="/upload"
+                      method="POST"
+                      enctype="multipart/form-data"
+                      class="upload-form">
+
+                    <input
+                        type="file"
+                        name="file"
+                        accept=".pdf,.txt"
+                        required
+                    >
+
+                    <button type="submit" class="primary-button">
+                        Upload document
+                    </button>
+
+                </form>
+
+                <span class="file-hint">
+                    PDF and TXT files supported
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- Recent Documents -->
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Recent documents</h2>
+                    <p>Continue studying from an existing document.</p>
+                </div>
+            </div>
+
+            {% if documents %}
+
+                <div class="document-list">
+
+                    {% for document in documents %}
+
+                        <div class="document-row">
+
+                            <div class="document-info">
+
+                                <div class="document-icon">📄</div>
+
+                                <div>
+                                    <h3>{{ document["filename"] }}</h3>
+
+                                    <p>
+                                        Uploaded {{ document["uploaded_at"] }}
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="document-actions">
+
+                                <a
+                                    class="secondary-button"
+                                    href="{{ url_for(
+                                        'open_document',
+                                        document_id=document['document_id']
+                                    ) }}"
+                                >
+                                    Open
+                                </a>
+
+                                <form
+                                    action="{{ url_for(
+                                        'remove_document',
+                                        document_id=document['document_id']
+                                    ) }}"
+                                    method="POST"
+                                >
+                                    <button
+                                        class="danger-button"
+                                        type="submit"
+                                    >
+                                        Delete
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+                    <p>You haven't uploaded any documents yet.</p>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- Quiz History -->
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Quiz history</h2>
+                    <p>Review your latest quiz performance.</p>
+                </div>
+            </div>
+
+            {% if quiz_results %}
+
+                <div class="quiz-history">
+
+                    {% for result in quiz_results %}
+
+                        <div class="quiz-row">
+
+                            <div>
+                                <h3>{{ result["filename"] }}</h3>
+                                <p>{{ result["completed_at"] }}</p>
+                            </div>
+
+                            <div class="quiz-score">
+                                <strong>
+                                    {{ result["score"] }}
+                                    /
+                                    {{ result["total"] }}
+                                </strong>
+
+                                <span>
+                                    {{ result["percentage"] }}%
+                                </span>
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+                    <p>No quizzes completed yet.</p>
+                </div>
+
+            {% endif %}
+
+        </section>
 
     </main>
 

@@ -20,8 +20,9 @@ from database import (
 )
 
 app = Flask(__name__)
-initialise_database()
 app.secret_key = "dev-secret-key"
+
+initialise_database()
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
 ALLOWED_EXTENSIONS = {"pdf", "txt"}

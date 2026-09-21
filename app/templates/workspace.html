@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study Workspace</title>
+    <title>{{ filename }} | StudyFlow</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
@@ -12,57 +12,97 @@
 
 <body>
 
-    <main class="container">
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">StudyFlow</a>
+            <span class="nav-label">Study Workspace</span>
+        </div>
+    </nav>
 
-        <a class="back-link" href="/">← Upload another document</a>
+    <main class="dashboard-container">
 
-        <div class="document-header">
+        <a class="back-link" href="/">
+            ← Back to dashboard
+        </a>
+
+        <header class="workspace-header">
+
+            <div class="workspace-file-icon">📄</div>
+
             <div>
-                <p class="document-label">CURRENT DOCUMENT</p>
-                <h1>📄 {{ filename }}</h1>
-                <p class="success-message">
-                    ✓ Document processed successfully
+                <p class="eyebrow">CURRENT DOCUMENT</p>
+                <h1>{{ filename }}</h1>
+                <p class="workspace-description">
+                    Your document is ready. Choose how you'd like to study it.
                 </p>
             </div>
-        </div>
 
-    <section class="workspace-section">
+        </header>
 
-        <h2>What would you like to do?</h2>
 
-        <div class="workspace-actions">
+        <section class="dashboard-section">
 
-        <form action="/summarise" method="POST">
-            <button type="submit">✨ Summarise Notes</button>
-        </form>
+            <div class="section-heading">
+                <div>
+                    <h2>Study tools</h2>
+                    <p>Choose an activity for this document.</p>
+                </div>
+            </div>
 
-        <form action="/quiz" method="POST">
-            <button type="submit">🧠 Generate Quiz</button>
-        </form>
+            <div class="study-tools">
 
-        </div>
+                <div class="study-tool-card">
 
-    </section>
+                    <div class="study-tool-icon">✦</div>
 
-        <section class="workspace-section">
+                    <h3>Summarise notes</h3>
 
-            <h2>Ask your notes</h2>
+                    <p>
+                        Extract the most important information
+                        from your study material.
+                    </p>
 
-            <form>
-                <input
-                    class="question-input"
-                    type="text"
-                    placeholder="Ask a question about your study material..."
-                >
+                    <form action="/summarise" method="POST">
+                        <button class="primary-button" type="submit">
+                            Generate summary
+                        </button>
+                    </form>
 
-                <button type="submit">Ask</button>
-            </form>
+                </div>
+
+
+                <div class="study-tool-card">
+
+                    <div class="study-tool-icon">🧠</div>
+
+                    <h3>Test your knowledge</h3>
+
+                    <p>
+                        Generate questions from your notes and
+                        see how well you understand the material.
+                    </p>
+
+                    <form action="/quiz" method="POST">
+                        <button class="primary-button" type="submit">
+                            Generate quiz
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
 
         </section>
 
-        <section class="workspace-section">
 
-            <h2>Document Preview</h2>
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Document preview</h2>
+                    <p>Extracted text from your uploaded material.</p>
+                </div>
+            </div>
 
             <div class="document-preview">
                 {{ text }}

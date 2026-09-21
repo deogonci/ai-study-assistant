@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Study Quiz</title>
+    <title>Quiz | StudyFlow</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
@@ -13,49 +12,91 @@
 
 <body>
 
-    <main class="container">
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">StudyFlow</a>
+            <span class="nav-label">Quiz</span>
+        </div>
+    </nav>
 
-        <a class="back-link" href="/">← Upload another document</a>
+    <main class="dashboard-container">
 
-        <h1>🧠 Study Quiz</h1>
+        <a class="back-link" href="/">
+            ← Back to dashboard
+        </a>
 
-        <p class="subtitle">{{ filename }}</p>
+        <header class="result-header">
 
-        {% if questions %}
+            <div class="result-icon">🧠</div>
 
-            <form action="/submit-quiz" method="POST">
+            <div>
+                <p class="eyebrow">KNOWLEDGE CHECK</p>
+                <h1>Study Quiz</h1>
+                <p>{{ filename }}</p>
+            </div>
 
-                {% for question in questions %}
+        </header>
 
-                    <div class="tool-card">
 
-                        <h3>Question {{ loop.index }}</h3>
+        <section class="dashboard-section">
 
-                        <p>{{ question.question }}</p>
+            {% if questions %}
 
-                        <input
-                            class="question-input"
-                            type="text"
-                            name="answer_{{ loop.index0 }}"
-                            placeholder="Enter your answer"
-                            required
-                        >
+                <form action="/submit-quiz" method="POST">
+
+                    <div class="quiz-questions">
+
+                        {% for question in questions %}
+
+                            <div class="quiz-question-card">
+
+                                <p class="question-number">
+                                    QUESTION {{ loop.index }}
+                                </p>
+
+                                <h3>
+                                    {{ question.question }}
+                                </h3>
+
+                                <input
+                                    class="quiz-answer-input"
+                                    type="text"
+                                    name="answer_{{ loop.index0 }}"
+                                    placeholder="Type your answer..."
+                                    autocomplete="off"
+                                    required
+                                >
+
+                            </div>
+
+                        {% endfor %}
 
                     </div>
 
-                    <br>
+                    <div class="quiz-submit">
+                        <button
+                            class="primary-button"
+                            type="submit"
+                        >
+                            Submit quiz
+                        </button>
+                    </div>
 
-                {% endfor %}
+                </form>
 
-                <button type="submit">Submit Quiz</button>
+            {% else %}
 
-            </form>
+                <div class="empty-state">
+                    <h3>Quiz unavailable</h3>
+                    <p>
+                        There wasn't enough suitable text in this
+                        document to generate a quiz.
+                    </p>
+                </div>
 
-        {% else %}
+            {% endif %}
 
-            <p>There wasn't enough text to generate a quiz.</p>
-
-        {% endif %}
+        </section>
 
     </main>
 
