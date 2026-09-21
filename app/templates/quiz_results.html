@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Quiz Results</title>
+    <title>Quiz Results | StudyFlow</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
@@ -13,50 +12,111 @@
 
 <body>
 
-    <main class="container">
-
-        <a class="back-link" href="/">← Back to home</a>
-
-        <h1>Quiz Results</h1>
-
-        <div class="document-header">
-            <h2>{{ score }} / {{ total }}</h2>
-            <p class="subtitle">{{ percentage }}%</p>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">StudyFlow</a>
+            <span class="nav-label">Quiz Results</span>
         </div>
+    </nav>
 
-        <section class="workspace-section">
+    <main class="dashboard-container">
 
-            <h2>Answers</h2>
+        <a class="back-link" href="/">
+            ← Back to dashboard
+        </a>
 
-            {% for result in results %}
+        <header class="score-header">
 
-                <div class="tool-card">
+            <p class="eyebrow">QUIZ COMPLETE</p>
 
-                    <h3>Question {{ loop.index }}</h3>
+            <h1>Your score</h1>
 
-                    <p>
-                        Your answer:
-                        <strong>{{ result.user_answer }}</strong>
-                    </p>
+            <div class="score-display">
+                {{ percentage }}%
+            </div>
 
-                    <p>
-                        Correct answer:
-                        <strong>{{ result.correct_answer }}</strong>
-                    </p>
+            <p>
+                You answered
+                <strong>{{ score }}</strong>
+                out of
+                <strong>{{ total }}</strong>
+                questions correctly.
+            </p>
 
-                    {% if result.is_correct %}
-                        <p>✅ Correct</p>
-                    {% else %}
-                        <p>❌ Incorrect</p>
-                    {% endif %}
+        </header>
 
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Answer review</h2>
+                    <p>Review your answers and see what you missed.</p>
                 </div>
+            </div>
 
-                <br>
+            <div class="answer-review">
 
-            {% endfor %}
+                {% for result in results %}
+
+                    <div class="answer-card">
+
+                        <div class="answer-heading">
+
+                            <h3>
+                                Question {{ loop.index }}
+                            </h3>
+
+                            {% if result.is_correct %}
+                                <span class="correct-badge">
+                                    ✓ Correct
+                                </span>
+                            {% else %}
+                                <span class="incorrect-badge">
+                                    ✕ Incorrect
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="answer-details">
+
+                            <div>
+                                <span>Your answer</span>
+                                <strong>
+                                    {{ result.user_answer }}
+                                </strong>
+                            </div>
+
+                            {% if not result.is_correct %}
+
+                                <div>
+                                    <span>Correct answer</span>
+                                    <strong>
+                                        {{ result.correct_answer }}
+                                    </strong>
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
 
         </section>
+
+
+        <div class="page-actions">
+
+            <a href="/" class="secondary-button">
+                Back to dashboard
+            </a>
+
+        </div>
 
     </main>
 

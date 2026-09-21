@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Study Summary</title>
+    <title>Summary | StudyFlow</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
@@ -13,21 +12,55 @@
 
 <body>
 
-    <main class="container">
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">StudyFlow</a>
+            <span class="nav-label">Summary</span>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
 
         <a class="back-link" href="/">
-            ← Upload another document
+            ← Back to dashboard
         </a>
 
-        <h1>Study Summary</h1>
+        <header class="result-header">
 
-        <p class="subtitle">
-            {{ filename }}
-        </p>
+            <div class="result-icon">✦</div>
 
-        <section class="document-preview">
-            {{ summary }}
+            <div>
+                <p class="eyebrow">STUDY SUMMARY</p>
+                <h1>Summary generated</h1>
+                <p>{{ filename }}</p>
+            </div>
+
+        </header>
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Key information</h2>
+                    <p>
+                        Important content extracted from your study material.
+                    </p>
+                </div>
+            </div>
+
+            <div class="summary-content">
+                {{ summary }}
+            </div>
+
         </section>
+
+        <div class="page-actions">
+
+            <a href="/" class="secondary-button">
+                Back to dashboard
+            </a>
+
+        </div>
 
     </main>
 

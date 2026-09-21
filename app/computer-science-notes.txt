@@ -1,7 +1,0 @@
-A stack is a data structure that follows the Last In,
-First Out principle.
-
-The two main operations are push and pop.
-
-Push adds an element to the top of the stack.
-Pop removes the element from the top of the stack.
